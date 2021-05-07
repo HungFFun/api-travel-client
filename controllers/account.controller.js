@@ -1,4 +1,5 @@
 const customer = require('../models/customer.model');
+const ACCOUNTCONSTANT = require('../constants/account.constant');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 const jwt_key = `${process.env.jwt_key}`;
@@ -14,22 +15,24 @@ const loginAccount = async (req, res) => {
       password,
       customerExist.password
     );
-
+    // kiểm trả account có tồn tại hay không
     if (customerExist !== null) {
+      // kiểm trả mật khẩu
       if (isPasswordMatch) {
+        // kiểm trả trạng thái tài khoản
         if (customerExist.activationStatus === true) {
           res.status(200).send(customerExist);
         } else {
-          res.status(200).send({ message: 'Tài khoản đã bị đóng' });
+          res.status(200).send({ message: ACCOUNTCONSTANT.ACCOUNT_LOCKED });
         }
       } else {
-        res.status(200).send({ message: 'Sai mật khẩu' });
+        res.status(200).send({ message: ACCOUNTCONSTANT.PASSWORD_ACCOUNT_FAIL });
       }
     } else {
-      res.status(200).send({ message: 'Không tìm thấy tài khoản' });
+      res.status(200).send({ message: ACCOUNTCONSTANT.NOT_FOUND_ACCOUNT });
     }
   } catch (error) {
-    res.status(500).send({ message: 'System Error' });
+    res.status(500).send({ message: ACCOUNTCONSTANT.SYSTEM_ERROR });
   }
 };
 
@@ -38,13 +41,13 @@ const registerAccount = async (req, res) => {
     const { fullName, birthday, phone, email, password } = req.body;
     // Mã hóa password
     const passwordBcrypt = bcrypt.hashSync(password, 8);
-
     // Xem khách hàng tồn tại hay chưa qua di động hoặc email
     const customerExist = await customer.findOne({
       $or: [{ phone: phone }, { email: email }],
     });
-
+    // kiểm trả account có tồn tại hay không
     if (customerExist === null) {
+      // tài khoản chưa tồn tại => khởi tạo tài khoản
       const newCustomer = new customer({
         fullName: fullName,
         birthday: birthday,
@@ -52,21 +55,97 @@ const registerAccount = async (req, res) => {
         email: email,
         password: passwordBcrypt,
       });
+      // Tạo token cho font-end lưu vào store
       newCustomer.token = jwt.sign({ _id: newCustomer._id }, jwt_key);
-      console.log(newCustomer);
-      newCustomer
-        .save()
+      newCustomer.save()
         .then((value) => {
           res.status(200).send(value);
         })
         .catch((error) => {
-          res.status(500).send({ message: 'Thêm khách hàng thất bại' });
+          res.status(500).send({ message: ACCOUNTCONSTANT.ADD_ACCOUNT_FAIL });
         });
     } else {
-      res.status(500).send({ message: 'Khách hàng đã tồn tại' });
+      res.status(500).send({ message: ACCOUNTCONSTANT.ACCOUNT_EXISTED });
     }
   } catch (error) {
-    res.status(500).send({ message: 'System Error' });
+    res.status(500).send({ message: ACCOUNTCONSTANT.SYSTEM_ERROR });
+  }
+};
+
+const updateStatusAccount = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const activationStatus = req.body.activationStatus;
+    // update trạng thái của tài khoản qua id
+    customer.findByIdAndUpdate(
+      { _id: id },
+      { $set: { activationStatus: activationStatus } },
+      function (err) {
+        if (err) {
+          res.status(500).send({ message: ACCOUNTCONSTANT.UPDATE_STATUS_FAIL });
+        } else {
+          // đóng hoặc mở dựa vào activationStatus được nhận qua request
+          if (activationStatus === true) {
+            res.status(200).send({ message: ACCOUNTCONSTANT.UNLOCK_ACCOUNT_SUCCESS });
+          } else if (activationStatus === false) {
+            res.status(200).send({ message: ACCOUNTCONSTANT.LOCK_ACCOUNT_SUCCESS });
+          }else{
+            res.status(500).send({ message: ACCOUNTCONSTANT.UPDATE_STATUS_FAIL });
+          }
+        }
+      }
+    );
+  } catch (error) {
+    res.status(500).send({ message: ACCOUNTCONSTANT.SYSTEM_ERROR });
+  }
+};
+
+//Tìm tài khoản qua UserId
+const getUserId = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const userById = await customer.findById({ _id: id });
+    if (userById.length != 0) {
+      res.status(200).send(userById);
+    } else {
+      res.status(500).send({ message: ACCOUNTCONSTANT.NOT_FOUND_ACCOUNT});
+    }
+  } catch (error) {
+    res.status(500).send({ message: ACCOUNTCONSTANT.SYSTEM_ERROR });
+  }
+};
+
+
+// tìm tài khoản qua token
+const getUserByToken = async (req, res) => {
+  try {
+    const userByToken = await customer.findOne({ token: req.body.token });
+    if (userByToken !== null) {
+      res.status(200).send(userByToken);
+    } else {
+      res.status(500).send({ message: ACCOUNTCONSTANT.NOT_FOUND_ACCOUNT });
+    }
+  } catch (error) {
+    res.status(500).send({ message: ACCOUNTCONSTANT.SYSTEM_ERROR });
+  }
+};
+
+const updatePasword = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const password = req.body.passnew;
+    // mã hóa password
+    const passwordBcrypt = bcrypt.hashSync(password, 8);
+    customer
+      .findByIdAndUpdate({ _id: id }, { $set: { password: passwordBcrypt } })
+      .then((value) => {
+        res.status(200).send(value);
+      })
+      .catch((error) => {
+        res.status(500).send({ message: ACCOUNTCONSTANT.CHANGE_PASS_FAIL});
+      });
+  } catch (error) {
+    res.status(500).send({ message: ACCOUNTCONSTANT.SYSTEM_ERROR });
   }
 };
 
@@ -89,81 +168,11 @@ const loginFaceOrGoogle = async (req, res) => {
           res.status(200).send(newCustomer);
         })
         .catch((error) => {
-          res.status(500).send({ message: 'Thêm khách hàng thất bại' });
+          res.status(500).send({ message: ACCOUNTCONSTANT.ADD_ACCOUNT_FAIL });
         });
     }
   } catch (error) {
-    res.status(500).send({ message: 'System Error' });
-  }
-};
-
-const updateStatusAccount = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const activationStatus = req.body.activationStatus;
-    customer.findByIdAndUpdate(
-      { _id: id },
-      { $set: { activationStatus: activationStatus } },
-
-      function (err) {
-        if (err) {
-          res.status(500).send({ message: 'Update trạng thái thất bại' });
-        } else {
-          if (activationStatus === true) {
-            res.status(200).send({ message: 'Tài khoản được mở lại' });
-          } else {
-            res.status(200).send({ message: 'Khóa tài khoản thành công' });
-          }
-        }
-      }
-    );
-  } catch (error) {
-    res.status(500).send({ message: 'System Error' });
-  }
-};
-
-const getUserId = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const userById = await customer.findById({ _id: id });
-    if (userById.length != 0) {
-      res.status(200).send(userById);
-    } else {
-      res.status(500).send({ message: 'User không tồn tại' });
-    }
-  } catch (error) {
-    res.status(500).send({ message: 'System Error' });
-  }
-};
-
-const getUserByToken = async (req, res) => {
-  try {
-    const userByToken = await customer.findOne({ token: req.body.token });
-
-    if (userByToken !== null) {
-      res.status(200).send(userByToken);
-    } else {
-      res.status(500).send({ message: 'User không tồn tại' });
-    }
-  } catch (error) {
-    res.status(500).send({ message: 'System Error' });
-  }
-};
-
-const updatePasword = async (req, res) => {
-  try {
-    const id = req.body._id;
-    const password = req.body.passnew;
-    customer
-      .findByIdAndUpdate({ _id: id }, { $set: { password: password } })
-      .then((value) => {
-        res.status(200).send(value);
-      })
-      .catch((error) => {
-        res.status(500).send({ message: 'Đổi password thất bại' });
-      });
-  } catch (error) {
-    res.status(500).send({ message: 'System Error' });
+    res.status(500).send({ message: ACCOUNTCONSTANT.SYSTEM_ERROR });
   }
 };
 

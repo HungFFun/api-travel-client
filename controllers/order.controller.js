@@ -1,7 +1,6 @@
 var order = require('../models/order.model');
 var customer = require('../models/customer.model');
 var seatDetail = require('../models/seatDetail.model');
-const RESPONSE = require('../utils/response');
 var ORDERCONSTANT = require('../constants/order.constant');
 var CUSTOMERCONSTANT = require('../constants/customer.constant');
 var moment = require('moment');
@@ -12,21 +11,16 @@ const getAllOrder = async (req, res) => {
       .find({})
       .populate(['orderDetail', 'seatDetail']);
     if (listOrder !== null) {
-      res
-        .status(200)
-        .send(new RESPONSE(ORDERCONSTANT.FIND_ORDER_SUCCESS, listOrder));
+      res.status(200).send(listOrder);
     }
-    res.status(200).send(new RESPONSE(ORDERCONSTANT.NOT_FIND_ORDER, []));
+    res.status(200).send({message:ORDERCONSTANT.NOT_FIND_ORDER});
   } catch (error) {
-    res.status(500).send(new RESPONSE(ORDERCONSTANT.FIND_ORDER_FAIL));
+    res.status(500).send({message:ORDERCONSTANT.SYSTEM_ERROR});
   }
 };
 
-const getAllOrderByCustomer = async (req, res) => {};
-
 const createOrderForCustomer = async (req, res) => {
   try {
-    console.log(req.body);
     var customerOrder = req.body.customer;
     var getSeatDetail = req.body.seatDetail;
     var getOrder = req.body.order;
@@ -44,25 +38,23 @@ const createOrderForCustomer = async (req, res) => {
         totalPrice: getSeatDetail.totalPrice,
       });
       newSeatDetail.save(function (err) {
-        if (err) res.status(500).send(new RESPONSE('Loi tao seat'));
+        if (err) res.status(500).send({message:ORDERCONSTANT.CREATE_SEAT_FAIL});
       });
       var newOrder = new order({
         orderCode: getOrder.orderCode,
-        orderDate: moment(getOrder.orderDate),
+        orderDate: getOrder.orderDate,
         listOrderDetail: null,
         seatDetail: newSeatDetail._id,
         total: getOrder.total,
       });
       newOrder.save(function (err) {
-        if (err) res.status(500).send(new RESPONSE('loi tao order'));
+        if (err) res.status(500).send({message:ORDERCONSTANT.CREATE_ORDER_FAIL});
       });
     } else {
       var newCustomer = new customer(customerOrder);
       newCustomer.save(function (err) {
         if (err)
-          res
-            .status(500)
-            .send(new RESPONSE(CUSTOMERCONSTANT.ADD_CUSTOMER_FAIL));
+          res.status(500).send({message:CUSTOMERCONSTANT.ADD_CUSTOMER_FAIL});
       });
       getSeatDetail.customerId = newCustomer._id;
       var newSeatDetail = new seatDetail({
@@ -73,22 +65,22 @@ const createOrderForCustomer = async (req, res) => {
         totalPrice: getSeatDetail.totalPrice,
       });
       newSeatDetail.save(function (err) {
-        if (err) res.status(500).send(new RESPONSE('Loi tao seat'));
+        if (err) res.status(500).send({message:ORDERCONSTANT.CREATE_SEAT_FAIL});
       });
       var newOrder = new order({
         orderCode: getOrder.orderCode,
-        orderDate: moment(getOrder.orderDate),
+        orderDate: getOrder.orderDate,
         listOrderDetail: null,
         seatDetail: newSeatDetail._id,
         total: getOrder.total,
       });
       newOrder.save(function (err) {
-        if (err) res.status(500).send(new RESPONSE('loi tao order'));
+        if (err) res.status(500).send({message:ORDERCONSTANT.CREATE_ORDER_FAIL});
       });
     }
-    res.status(200).send(new RESPONSE(ORDERCONSTANT.CREATE_ORDER_SUCCESS, []));
+    res.status(200).send(newOrder);
   } catch (error) {
-    res.status(500).send(new RESPONSE(ORDERCONSTANT.CREATE_ORDER_FAIL));
+    if (err) res.status(500).send({message:ORDERCONSTANT.SYSTEM_ERROR});
   }
 };
 module.exports = {

@@ -9,10 +9,10 @@ router.post(
   accountController.loginFaceOrGoogle
 );
 
-router.get('/api/account/profile/:id', accountController.getUserId);
-router.post('/api/account/profile', accountController.getUserByToken);
+router.get('/api/account/profileByUserId', accountController.getUserId);
+router.post('/api/account/profileByToken', accountController.getUserByToken);
 
-router.put('/api/account/status/:id', accountController.updateStatusAccount);
-router.put('/api/account/changePass/:id', accountController.updatePasword);
+router.put('/api/account/status', accountController.updateStatusAccount);
+router.put('/api/account/changePass', accountController.updatePasword);
 
 module.exports = router;

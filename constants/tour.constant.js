@@ -20,3 +20,7 @@ module.exports.TOUR_NOT_EXIST = "TOUR không tồn tại"
 
 // tạo mã tour
 module.exports.CREATE_TOURID_FAIL = "tạo TOUR ID Lỗi"
+module.exports.TOUR_IMAGE_FAIL = "Hình ảnh tour bị lỗi"
+
+// Lỗi hệ thống
+module.exports.SYSTEM_ERROR = "Lỗi hệ thống"

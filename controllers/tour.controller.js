@@ -7,31 +7,29 @@ var moment = require('moment');
 
 const getAllTour = async (req, res) => {
   try {
-    var currDate = new Date()
     const allTour = await tour
-      .find({}).where('startDate').gte(currDate)
+      .find({})
       .populate(['hotel', 'place', 'employee']);
-
-    if (allTour !== null) {
+    if (allTour.length != 0) {
       res.status(200).send(allTour);
     } else {
-      res.status(500).send(OURCONSTANT.NOT_FOUND_TOUR);
+      res.status(200).send({message:TOURCONSTANT.NOT_FOUND_TOUR});
     }
   } catch (error) {
-    res.status(500).send({ message: 'System Error' });
+    res.status(500).send({ message: TOURCONSTANT.SYSTEM_ERROR });
   }
 };
 const getTourById = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = req.body.id;
     const tourById = await tour.findById({ _id: id }).populate('employee');
-    if (tourById != null || tourById != []) {
+    if (tourById.length != 0) {
       res.status(200).send(tourById);
     } else {
-      res.status(500).send(TOURCONSTANT.NOT_FOUND_TOUR);
+      res.status(200).send({message:TOURCONSTANT.NOT_FOUND_TOUR});
     }
   } catch (error) {
-    res.status(500).send({ message: 'System Error' });
+    res.status(500).send({ message: TOURCONSTANT.SYSTEM_ERROR });
   }
 };
 
@@ -140,7 +138,7 @@ const findTourByTourName = async (req, res) => {
       .sort({ startDate: 1 });
     res.status(200).send(listTourByTourName);
   } catch (error) {
-    res.status(500).send({ message: 'System Error' });
+    res.status(500).send({ message: TOURCONSTANT.SYSTEM_ERROR });
   }
 };
 
@@ -155,7 +153,7 @@ const findTourByTourNameAndStartDate = async (req, res) => {
     });
     res.status(200).send(tourByName);
   } catch (error) {
-    res.status(500).send({ message: 'System Error' });
+    res.status(500).send({ message: TOURCONSTANT.SYSTEM_ERROR });
   }
 };
 module.exports = {

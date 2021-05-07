@@ -1,7 +1,5 @@
 const product = require('../models/product.model');
 const PRODUCTCONSTANT = require('../constants/product.constant');
-const RESPONSE = require('../utils/response');
-const imageDBS3 = require('../config/imageDBS3');
 
 const getAllProduct = async (req, res) => {
   try {
@@ -9,30 +7,30 @@ const getAllProduct = async (req, res) => {
     if (allProduct.length !== 0) {
       res.status(200).send(allProduct);
     } else {
-      res.status(500).send({ message: 'Danh sách sản phẩm trống' });
+      res.status(200).send({ message: PRODUCTCONSTANT.NOT_FOUND_PRODUCT });
     }
   } catch (error) {
-    res.status(500).send({ message: 'System Error' });
+    res.status(500).send({ message: PRODUCTCONSTANT.SYSTEM_ERROR });
   }
 };
 const getProductById = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = req.body.id;
     const productById = await product.findById({ _id: id });
-    if (productById != null) {
+    if (productById.length != 0) {
       res.status(200).send(productById);
     } else {
-      res.status(200).send({ message: 'Không tìm thấy sản phẩm' });
+      res.status(200).send({ message: PRODUCTCONSTANT.NOT_FOUND_PRODUCT });
     }
   } catch (error) {
-    res.status(500).send({ message: 'System Error' });
+    res.status(500).send({ message: PRODUCTCONSTANT.SYSTEM_ERROR });
   }
 };
+
 // get product qua type
 const getProductByType = async (req, res) => {
   try {
     const typesOftourism = req.body.typesOftourism;
-    console.log(typesOftourism);
     if (typesOftourism === 'null') {
       const allProduct = await product.find({});
       res.status(200).send(allProduct);
@@ -43,7 +41,7 @@ const getProductByType = async (req, res) => {
       res.status(200).send(productByTypesOftourism);
     }
   } catch (error) {
-    res.status(500).send({ message: 'System Error' });
+    res.status(500).send({ message: PRODUCTCONSTANT.SYSTEM_ERROR });
   }
 };
 

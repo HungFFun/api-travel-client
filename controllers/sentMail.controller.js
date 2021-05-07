@@ -1,7 +1,6 @@
 var nodemailer = require('nodemailer');
 const tour = require('../models/tour.model');
 const TOURCONSTANT = require('../constants/tour.constant');
-const RESPONSE = require('../utils/response');
 const tourModel = require('../models/tour.model');
 
 // const sentEmailConfirm = async (res, req) => {
@@ -266,7 +265,7 @@ const sentEmailConfirm = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).send(new RESPONSE(true, TOURCONSTANT.NOT_FOUND_TOUR, null));
+    res.status(500).send({message: TOURCONSTANT.NOT_FOUND_TOUR});
   }
 };
 module.exports = {
