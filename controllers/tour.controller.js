@@ -19,7 +19,7 @@ const getAllTour = async (req, res) => {
 };
 const getTourById = async (req, res) => {
   try {
-    const id = req.body.id;
+    const id = req.params.id;
     const tourById = await tour.findById({ _id: id }).populate('employee');
     if (tourById.length != 0) {
       res.status(200).send(tourById);
@@ -37,14 +37,14 @@ const getTourByKeyword = async (req, res) => {
     let query = {};
     let priceDetail = null;
     let ticket = 0;
-    if(startDate !== undefined){
-      var sDate = new Date(moment(startDate))
-      sDate.setDate(sDate.getDate()+1)
+    if (startDate !== null) {
+      var sDate = new Date(moment(startDate));
+      sDate.setDate(sDate.getDate() + 1);
       query.startDate = sDate;
     }
-    if(endDate !== undefined){
-      var eDate = new Date(moment(endDate))
-      eDate.setDate(eDate.getDate()+1)
+    if (endDate !== null) {
+      var eDate = new Date(moment(endDate));
+      eDate.setDate(eDate.getDate() + 1);
       query.endDate = eDate;
     }
     // startDate ? (query.startDate = new Date(moment(startDate))) : '';
@@ -144,8 +144,8 @@ const findTourByTourNameAndStartDate = async (req, res) => {
   try {
     const tourName = req.body.tourName;
     const startDate = new Date(moment(req.body.startDate));
-  
-    startDate.setDate(startDate.getDate()+1);
+
+    startDate.setDate(startDate.getDate() + 1);
     const tourByName = await tour.findOne({
       $and: [{ tourName: tourName }, { startDate: startDate }],
     });

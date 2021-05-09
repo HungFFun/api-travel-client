@@ -3,13 +3,17 @@ const tour = require('../models/tour.model');
 const TOURCONSTANT = require('../constants/tour.constant');
 const tourModel = require('../models/tour.model');
 
-// const sentEmailConfirm = async (res, req) => {
-
-// };
-
 const sentEmailConfirm = async (req, res) => {
   try {
-    const { tour, user, productCart, inforBooking } = req.body;
+    const {
+      tour,
+      user,
+      productCart,
+      inforBooking,
+      inforAdults,
+      inforChildren,
+      inforYoung,
+    } = req.body;
     var transporter = nodemailer.createTransport({
       // config mail server
       service: 'Gmail',
@@ -21,7 +25,7 @@ const sentEmailConfirm = async (req, res) => {
     var mainOptions = {
       // thiết lập đối tượng, nội dung gửi mail
       from: 'Thanh Batmon',
-      to: 'hung.fun@gmail.com',
+      to: user.email,
       subject: 'Xác thực đăng ký Tour của BandaFly',
       text: 'You recieved message from ',
       html:
@@ -102,7 +106,7 @@ const sentEmailConfirm = async (req, res) => {
                           <td class="m_8740785467110873926td-right">
                               <span style="font-weight:bold">` +
         inforBooking.bookId +
-        `</span>&nbsp;&nbsp;<a href="https://travel.com.vn/booking/SearchBookingIB?pin_code=a303becc-82e9-46a7-a77b-0f8bc40501cd" style="font-style:italic;color:#306eb7" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://travel.com.vn/booking/SearchBookingIB?pin_code%3Da303becc-82e9-46a7-a77b-0f8bc40501cd&amp;source=gmail&amp;ust=1619546833360000&amp;usg=AFQjCNFcS8_v29Uo9RcjF08UPO43OHKxow">(Xem chi tiết)</a><br>
+        `<br>
                               <span style="font-style:italic">Quý khách vui lòng nhớ số booking (Booking No) để thuận tiện cho các giao dịch sau này.</span>
                           </td>
                       </tr>
@@ -193,8 +197,7 @@ const sentEmailConfirm = async (req, res) => {
                       <tr>
                           <td class="m_8740785467110873926td-left">Ghi chú:</td>
                           <td class="m_8740785467110873926td-right">
-                              Booking từ <a href="http://travel.com.vn" target="_blank" data-saferedirecturl="https://www.google.com/url?q=http://travel.com.vn&amp;source=gmail&amp;ust=1619546833360000&amp;usg=AFQjCNE3jbYBWPZOyDR02MWuVTPHzkhP6A"><span class="il">travel</span>.com.vn</a>(Tour giờ chót -800,000 đ/khách). Thời hạn thanh toán 18/04/2021 16:47:33.
-                          </td>
+                            Thời hạn thanh toán 1 ngày sau khi nhân được Email này. </td>
                       </tr>
                       <tr>
                           <td class="m_8740785467110873926td-left">Lưu ý:</td>
@@ -245,12 +248,7 @@ const sentEmailConfirm = async (req, res) => {
                   </div>
               </td>
           </tr>
-          <tr>
-              <td colspan="2">
-                  Quý khách vui lòng <a href="https://travel.com.vn/booking/SearchBookingIB?pin_code=a303becc-82e9-46a7-a77b-0f8bc40501cd" style="color:#306eb7;font-style:italic" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://travel.com.vn/booking/SearchBookingIB?pin_code%3Da303becc-82e9-46a7-a77b-0f8bc40501cd&amp;source=gmail&amp;ust=1619546833360000&amp;usg=AFQjCNFcS8_v29Uo9RcjF08UPO43OHKxow">click vào đây</a> để xem chi tiết booking.
-                  Điều khoản đăng ký online. Quý khách vui lòng <a href="https://travel.com.vn/cam-ket-online-noi-dia.aspx" style="color:#306eb7;font-style:italic" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://travel.com.vn/cam-ket-online-noi-dia.aspx&amp;source=gmail&amp;ust=1619546833360000&amp;usg=AFQjCNEkl1WXw9i_8qgd41b-wi2Va3InvA">click vào đây</a>.
-              </td>
-          </tr>
+          
           <tr>
               <td colspan="2">&nbsp;</td>
           </tr>
@@ -265,7 +263,7 @@ const sentEmailConfirm = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).send({message: TOURCONSTANT.NOT_FOUND_TOUR});
+    res.status(500).send({ message: TOURCONSTANT.NOT_FOUND_TOUR });
   }
 };
 module.exports = {
