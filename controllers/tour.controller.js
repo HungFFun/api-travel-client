@@ -1,8 +1,5 @@
 const tour = require('../models/tour.model');
-const tourService = require('../services/tour.service');
-const TIME = require('../utils/time');
 const TOURCONSTANT = require('../constants/tour.constant');
-const imageDBS3 = require('../config/imageDBS3');
 var moment = require('moment');
 
 const getAllTour = async (req, res) => {
@@ -13,9 +10,10 @@ const getAllTour = async (req, res) => {
     if (allTour.length != 0) {
       res.status(200).send(allTour);
     } else {
-      res.status(200).send({message:TOURCONSTANT.NOT_FOUND_TOUR});
+      res.status(200).send(TOURCONSTANT.NOT_FOUND_TOUR);
     }
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: TOURCONSTANT.SYSTEM_ERROR });
   }
 };
@@ -26,7 +24,7 @@ const getTourById = async (req, res) => {
     if (tourById.length != 0) {
       res.status(200).send(tourById);
     } else {
-      res.status(200).send({message:TOURCONSTANT.NOT_FOUND_TOUR});
+      res.status(200).send(TOURCONSTANT.NOT_FOUND_TOUR);
     }
   } catch (error) {
     res.status(500).send({ message: TOURCONSTANT.SYSTEM_ERROR });

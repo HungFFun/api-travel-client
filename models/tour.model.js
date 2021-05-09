@@ -1,4 +1,7 @@
 var mongoose = require("mongoose");
+var hotel = require("./hotel.model")
+var place = require("./place.model")
+var employee = require("./employee.model")
 const mongoosePaginate = require("mongoose-paginate-v2");
 
 var TourSchema = mongoose.Schema(
@@ -51,11 +54,11 @@ var TourSchema = mongoose.Schema(
     startPlace: {
       type: String,
       required: true,
-      default: "HCM",
+      default: "TP.Hồ Chí Minh",
     },
     employee: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "employee",
+      ref: employee,
     },
     listImage: [
       {
@@ -65,13 +68,13 @@ var TourSchema = mongoose.Schema(
     place: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "place",
+        ref: place,
       }
     ],
     hotel: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "hotel",
+        ref: hotel,
       }
     ],
     transportation: [
@@ -99,6 +102,10 @@ var TourSchema = mongoose.Schema(
     numberTicket:{
       type:Number,
       default:40
+    },
+    statusTour:{
+      type:Boolean,
+      default:true
     }
   },
   { versionKey: false }

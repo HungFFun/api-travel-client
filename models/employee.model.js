@@ -1,5 +1,5 @@
-var mongoose = require("mongoose");
-const mongoosePaginate = require("mongoose-paginate-v2");
+var mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 var EmployeeSchema = mongoose.Schema(
   {
@@ -26,6 +26,10 @@ var EmployeeSchema = mongoose.Schema(
       type: String,
       require: true,
     },
+    password: {
+      type: String,
+      require: true,
+    },
     role: {
       type: String,
       require: true,
@@ -43,4 +47,4 @@ EmployeeSchema.index(
 );
 
 EmployeeSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model("employee", EmployeeSchema, "employees");
+module.exports = mongoose.model('employee', EmployeeSchema, 'employees');

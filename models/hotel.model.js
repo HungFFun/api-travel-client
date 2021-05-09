@@ -26,7 +26,7 @@ var HotelSchema = mongoose.Schema({
 HotelSchema.index({
     hotelName: 1,
     email: 1,
-    SDT:1,
+    phone:1,
   }, {
     unique: true,
 });
