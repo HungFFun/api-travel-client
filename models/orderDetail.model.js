@@ -1,8 +1,9 @@
 var mongoose = require('mongoose');
+var product =require('./product.model')
 const mongoosePaginate = require('mongoose-paginate-v2')
 
 var OrderDetailSchema = mongoose.Schema({
-    amount: {
+    quantily: {
         type: Number
     },
     price: {
@@ -10,11 +11,11 @@ var OrderDetailSchema = mongoose.Schema({
     },
     productId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "product",
+        ref: product,
     },
     totalPrice: {
         type: Number
     }
 }, { versionKey: false });
 OrderDetailSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model('orderDetail', OrderSchema, 'orderDetails');
+module.exports = mongoose.model('orderDetail', OrderDetailSchema, 'orderDetails');
