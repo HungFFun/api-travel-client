@@ -62,8 +62,9 @@ async function cancelOrder() {
   setTimeout(async function () {
     try {
       var currDate = new Date()
-      currDate.setDate(currDate.getDate() + 1)
-      const getListOrder = await order.find({}).where('orderDate').lt(currDate)
+      currDate.setDate(currDate.getDate() - 1)
+      console.log(currDate);
+      const getListOrder = await order.find({}).where('orderDate').gte(currDate)
       for (let index = 0; index < getListOrder.length; index++) {
         const getSeatDetail = await seatDetail.findOne({ _id: getListOrder[index].seatDetail });
         const getTour = await tour.findOne({ _id: getSeatDetail.tourId });
@@ -90,8 +91,9 @@ async function cancelOrder() {
     } catch (error) {
       console.log('cancel tour Error');
     }
-  }, 360000);
+  },86400000);
 }
 http.listen(process.env.PORT || 8000, function () {
+  cancelOrder()
   console.log(`listening on :${process.env.PORT}`);
 });
