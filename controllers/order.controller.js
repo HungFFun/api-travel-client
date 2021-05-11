@@ -1,6 +1,7 @@
 const order = require('../models/order.model');
 const customerModel = require('../models/customer.model');
 const orderDetailModel = require('../models/orderDetail.model');
+const tourModel = require('../models/tour.model')
 const seatDetail = require('../models/seatDetail.model');
 const ORDERCONSTANT = require('../constants/order.constant');
 const CUSTOMERCONSTANT = require('../constants/customer.constant');
@@ -110,14 +111,21 @@ const createOrderForCustomer = async (req, res) => {
         // amountRoom: getSeatDetail.amountRoom,
         totalPrice: priceCustomerTour,
       });
-      console.log('seat' + newSeatDetail);
       newSeatDetail
         .save()
         .then((value) => {})
         .catch((error) => {
           res.status(500).send({ message: ORDERCONSTANT.CREATE_SEAT_FAIL });
         });
-
+        // trừ vé tour
+        tour.numberTicket = tour.numberTicket - inforBooking.totalPeople;
+        if(tour.numberTicket<=0){
+          tour.seatStatus = "Hết chỗ";
+        }
+        tourModel.findByIdAndUpdate({_id:tour._id},
+          { $set: {numberTicket:tour.numberTicket,seatStatus:tour.seatStatus} }).then((value) => {
+            console.log("Update số vé thành công");
+          })
       const newOrder = new order({
         orderCode: inforBooking.bookId,
         orderDate: inforBooking.dateBook,
@@ -154,6 +162,15 @@ const createOrderForCustomer = async (req, res) => {
         if (err)
           res.status(500).send({ message: ORDERCONSTANT.CREATE_SEAT_FAIL });
       });
+      // trừ số  tour
+      tour.numberTicket = tour.numberTicket - inforBooking.totalPeople;
+      if(tour.numberTicket<=0){
+        tour.seatStatus = "Hết chỗ";
+      }
+      tourModel.findByIdAndUpdate({_id:tour._id},
+        { $set: {numberTicket:tour.numberTicket,seatStatus:tour.seatStatus} }).then((value) => {
+          console.log("Update tour thành công");
+        })
       const newOrder = new order({
         orderCode: inforBooking.bookId,
         orderDate: inforBooking.dateBook,
