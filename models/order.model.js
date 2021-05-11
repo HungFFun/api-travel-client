@@ -1,4 +1,6 @@
 var mongoose = require('mongoose');
+const seatDetail = require('./seatDetail.model')
+const orderDetail = require('./orderDetail.model')
 const mongoosePaginate = require('mongoose-paginate-v2')
 
 var OrderSchema = mongoose.Schema({
@@ -11,11 +13,11 @@ var OrderSchema = mongoose.Schema({
     },
     listOrderDetail:[{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "orderDetail",
+        ref: orderDetail,
     }],
     seatDetail:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "seatDetail",
+        ref: seatDetail,
     },
     total:{
         type:Number

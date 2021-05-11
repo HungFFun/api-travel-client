@@ -13,6 +13,11 @@ const accountRouter = require('./routes/account.router');
 const orderRouter = require('./routes/order.router');
 const sentMailRouter = require('./routes/sentMail.router');
 
+const order = require('./models/order.model')
+const seatDetail = require('./models/seatDetail.model')
+const tour = require('./models/tour.model')
+const orderDetail = require('./models/orderDetail.model')
+
 const fileUpload = require('express-fileupload');
 require('dotenv').config();
 
@@ -53,7 +58,40 @@ app.use(function (req, res, next) {
   );
   next();
 });
-
+async function cancelOrder() {
+  setTimeout(async function () {
+    try {
+      var currDate = new Date()
+      currDate.setDate(currDate.getDate() + 1)
+      const getListOrder = await order.find({}).where('orderDate').lt(currDate)
+      for (let index = 0; index < getListOrder.length; index++) {
+        const getSeatDetail = await seatDetail.findOne({ _id: getListOrder[index].seatDetail });
+        const getTour = await tour.findOne({ _id: getSeatDetail.tourId });
+        getTour.seatStatus = "Còn Chỗ";
+        getTour.numberTicket = getTour.numberTicket + getSeatDetail.listCutomerTour.length;
+        tour.findByIdAndUpdate({ _id: getTour._id },
+          { $set: { numberTicket: getTour.numberTicket, seatStatus: getTour.seatStatus } }).then((value) => {
+            console.log("Update tour thành công");
+          })
+        seatDetail.findByIdAndDelete({ _id: getSeatDetail._id }).then((value) => {
+          console.log("Delete seat Detail thành công");
+        })
+        for (let i = 0; i < getListOrder[index].listOrderDetail.length; i++) {
+          const element = getListOrder[index].listOrderDetail[i];
+          orderDetail.findByIdAndDelete({ _id: element._id }).then((value) => {
+            console.log("Delete order Detail thành công");
+          })
+        }
+        order.findByIdAndDelete({ _id: getListOrder[index]._id }).then((value) => {
+          console.log("Delete order thành công");
+        })
+      }
+      cancelOrder();
+    } catch (error) {
+      console.log('cancel tour Error');
+    }
+  }, 360000);
+}
 http.listen(process.env.PORT || 8000, function () {
   console.log(`listening on :${process.env.PORT}`);
 });
