@@ -94,6 +94,6 @@ async function cancelOrder() {
   },86400000);
 }
 http.listen(process.env.PORT || 8000, function () {
-  cancelOrder()
+  // cancelOrder()
   console.log(`listening on :${process.env.PORT}`);
 });

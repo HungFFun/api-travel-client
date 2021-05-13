@@ -1,27 +1,36 @@
 var mongoose = require('mongoose');
-const seatDetail = require('./seatDetail.model')
-const orderDetail = require('./orderDetail.model')
-const mongoosePaginate = require('mongoose-paginate-v2')
+const seatDetail = require('./seatDetail.model');
+const orderDetail = require('./orderDetail.model');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
-var OrderSchema = mongoose.Schema({
-    orderCode:{
-        type:String
+var OrderSchema = mongoose.Schema(
+  {
+    orderCode: {
+      type: String,
     },
-    orderDate:{
-        type:Date,
-        default: new Date()
+    orderDate: {
+      type: Date,
+      default: new Date(),
     },
-    listOrderDetail:[{
+    orderDetail: [
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: orderDetail,
-    }],
-    seatDetail:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: seatDetail,
+      },
+    ],
+    seatDetail: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: seatDetail,
     },
-    total:{
-        type:Number
+    total: {
+      type: Number,
+    },
+    statusOrder:{
+      type:Boolean,
+      default:false
     }
-},{ versionKey: false });
+  },
+  { versionKey: false }
+);
 OrderSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model('order',OrderSchema,'orders');
+module.exports = mongoose.model('order', OrderSchema, 'orders');

@@ -9,6 +9,8 @@ module.exports.FIND_ORDER_SUCCESS="Tìm hóa đơn thành công"
 module.exports.CREATE_ORDER_SUCCESS="Tạo hóa đơn thành công"
 module.exports.CREATE_ORDER_FAIL="Tạo hóa đơn thất bại"
 module.exports.CREATE_SEAT_FAIL="Tạo ghế thất bại"
+//Update
+module.exports.UPDATE_ORDER_SUCCESS="Cập nhật hóa đơn thành công"
 
 // Lỗi hệ thống
 module.exports.SYSTEM_ERROR = "Lỗi hệ thống"

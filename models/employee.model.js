@@ -34,6 +34,10 @@ var EmployeeSchema = mongoose.Schema(
       type: String,
       require: true,
     },
+    activationStatus: {
+      type: Boolean,
+      default: true,
+    },
   },
   { versionKey: false }
 );

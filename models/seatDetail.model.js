@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
 var tour = require('./tour.model');
-var customer= require('./customer.model')
+var customer = require('./customer.model');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 var SeatDetailSchema = mongoose.Schema(
   {
-    tourId: {
+    tour: {
       type: mongoose.Schema.Types.ObjectId,
       ref: tour,
     },
@@ -25,7 +25,7 @@ var SeatDetailSchema = mongoose.Schema(
         },
       },
     ],
-    customerId: {
+    customer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: customer,
     },
