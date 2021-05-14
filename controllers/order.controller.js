@@ -330,7 +330,7 @@ const updateOrderForCustomer = async (req, res) => {
       // update lại giỏ hàng
       if (productCart != undefined) {
         // xóa các sản phẩm trước đó
-        if (listproduct.length != 0) {
+        if (listOrderDetail.length != 0) {
           for (let i = 0; i < listOrderDetail.length; i++) {
             const element = listOrderDetail[i];
             var getProductById = await productModel.findById({ _id: element.product });

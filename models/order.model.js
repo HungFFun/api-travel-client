@@ -26,8 +26,8 @@ var OrderSchema = mongoose.Schema(
       type: Number,
     },
     statusOrder:{
-      type:Boolean,
-      default:false
+      type:String,
+      default:"waiting"
     }
   },
   { versionKey: false }
