@@ -18,7 +18,7 @@ var ProductSchema = mongoose.Schema({
         require: true
     },
     quantity:{
-        type: String,
+        type: Number,
         required: true
     },
     typesOftourism:[{
