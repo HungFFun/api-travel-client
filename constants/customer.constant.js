@@ -15,6 +15,9 @@ module.exports.FOUND_CUSTOMER_SUCCESS="tìm thấy khách hàng"
 module.exports.NOT_FOUND_CUSTOMER="Không tìm thấy khách hàng"
 module.exports.CUSTOMER_EXISTED = "Khách hàng đã tồn tại"
 
+// get order
+module.exports.CUSTOMER_NOT_ORDER = "Khách hàng không có order"
+
 // Lỗi hệ thống
 module.exports.SYSTEM_ERROR = "Lỗi hệ thống"
 

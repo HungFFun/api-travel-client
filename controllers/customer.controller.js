@@ -1,5 +1,12 @@
 const CUSTOMERCONSTANT = require('../constants/customer.constant')
 const customer = require('../models/customer.model');
+const order = require('../models/order.model');
+const ORDERCONSTANT = require('../constants/order.constant');
+const TOURCONSTANT = require('../constants/tour.constant');
+const seatDetail = require('../models/seatDetail.model');
+const productModel = require('../models/product.model');
+const tour = require('../models/tour.model');
+const orderDetail = require('../models/orderDetail.model');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 const jwt_key = `${process.env.jwt_key}`;
@@ -73,8 +80,41 @@ const updateCustomer = async (req, res) => {
   }
 };
 
+const getNumberOrder = async (req, res) => {
+  try {
+    const customerId = req.body.customerId;
+    const getOrder = await order.find({})
+    var numCancelled = 0 ;
+    var numWaiting = 0 ;
+    var numChecked = 0;
+    if(getOrder.length != 0){
+      for (let index = 0; index < getOrder.length; index++) {
+        const element = getOrder[index].seatDetail;
+        if(element.customer = customerId){
+          if(getOrder[index].statusOrder = 'cancelled'){
+            numCancelled = numCancelled + 1;
+          }
+          else if(getOrder[index].statusOrder = 'checked'){
+            numChecked = numChecked + 1;
+          }
+          else{
+            numWaiting = numWaiting + 1;
+          }
+        }
+      }
+      res.status(200).send({ numCancelled,numChecked,numWaiting })
+    }
+    else{
+      res.status(200).send({ message: CUSTOMERCONSTANT.CUSTOMER_NOT_ORDER })
+    }
+  } catch (error) {
+    res.status(500).send({ message: CUSTOMERCONSTANT.SYSTEM_ERROR });
+  }
+};
+
 module.exports = {
   getAllCustomer,
   getCustomerById,
   updateCustomer,
+  getNumberOrder
 };
