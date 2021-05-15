@@ -20,7 +20,9 @@ const getAllTour = async (req, res) => {
 const getTourById = async (req, res) => {
   try {
     const id = req.params.id;
-    const tourById = await tour.findById({ _id: id }).populate('employee');
+    const tourById = await tour
+      .findById({ _id: id })
+      .populate(['employee', 'place']);
     if (tourById.length != 0) {
       res.status(200).send(tourById);
     } else {
