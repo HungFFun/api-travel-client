@@ -214,7 +214,7 @@ const createOrderForCustomer = async (req, res) => {
         }
       });
       const newSeatDetail = new seatDetailModel({
-        tourId: tour._id,
+        tour: tour._id,
         listCutomerTour: listCustomerTour,
         customer: newCustomer._id,
         // amountRoom: getSeatDetail.amountRoom,
