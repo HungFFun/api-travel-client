@@ -1,4 +1,4 @@
-const CUSTOMERCONSTANT = require('../constants/customer.constant')
+const CUSTOMERCONSTANT = require('../constants/customer.constant');
 const customer = require('../models/customer.model');
 const order = require('../models/order.model');
 const ORDERCONSTANT = require('../constants/order.constant');
@@ -49,7 +49,7 @@ const updateCustomer = async (req, res) => {
       phone,
       email,
       identityCard,
-      address
+      address,
     } = req.body;
     let query = {};
     fullName ? (query.fullName = fullName) : '';
@@ -69,10 +69,7 @@ const updateCustomer = async (req, res) => {
     }
     identityCard ? (query.identityCard = identityCard) : '';
     address ? (query.address = address) : '';
-    customer.findByIdAndUpdate(
-      { _id: id },
-      { $set: query }
-    ).then((docs) => {
+    customer.findByIdAndUpdate({ _id: id }, { $set: query }).then((docs) => {
       res.status(200).send(docs);
     });
   } catch (error) {
@@ -82,30 +79,40 @@ const updateCustomer = async (req, res) => {
 
 const getNumberOrder = async (req, res) => {
   try {
-    const customerId = req.body.customerId;
-    const getOrder = await order.find({})
-    var numCancelled = 0 ;
-    var numWaiting = 0 ;
-    var numChecked = 0;
-    if(getOrder.length != 0){
-      for (let index = 0; index < getOrder.length; index++) {
-        const element = getOrder[index].seatDetail;
-        if(element.customer = customerId){
-          if(getOrder[index].statusOrder = 'cancelled'){
-            numCancelled = numCancelled + 1;
-          }
-          else if(getOrder[index].statusOrder = 'checked'){
-            numChecked = numChecked + 1;
-          }
-          else{
-            numWaiting = numWaiting + 1;
+    const customerId = req.body.id;
+    const getOrder = await order
+      .find({})
+      .select({ orderDate: 1 })
+      .populate([
+        {
+          path: 'seatDetail',
+          populate: [
+            {
+              path: 'tour',
+              select: { tourName: 1 },
+            },
+          ],
+        },
+      ]);
+    const oderCancelled = [];
+    const oderWaiting = [];
+    const oderChecked = [];
+    if (getOrder.length !== 0) {
+      for (let i = 0; i < getOrder.length; i++) {
+        const element = getOrder[i].seatDetail;
+        if ((element.customer = customerId)) {
+          if ((getOrder[i].statusOrder = 'cancelled')) {
+            oderCancelled.push(getOrder[i]);
+          } else if ((getOrder[i].statusOrder = 'checked')) {
+            oderChecked.push(getOrder[i]);
+          } else {
+            oderWaiting.push(getOrder[i]);
           }
         }
       }
-      res.status(200).send({ numCancelled,numChecked,numWaiting })
-    }
-    else{
-      res.status(200).send({ message: CUSTOMERCONSTANT.CUSTOMER_NOT_ORDER })
+      res.status(200).send({ oderCancelled, oderChecked, oderWaiting });
+    } else {
+      res.status(200).send({ message: CUSTOMERCONSTANT.CUSTOMER_NOT_ORDER });
     }
   } catch (error) {
     res.status(500).send({ message: CUSTOMERCONSTANT.SYSTEM_ERROR });
@@ -116,5 +123,5 @@ module.exports = {
   getAllCustomer,
   getCustomerById,
   updateCustomer,
-  getNumberOrder
+  getNumberOrder,
 };
