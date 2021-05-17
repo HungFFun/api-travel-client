@@ -191,7 +191,6 @@ const createOrderForCustomer = async (req, res) => {
         orderDetail: orderDetail,
         seatDetail: newSeatDetail._id,
         total: inforBooking.totalMoney,
-        statusOrder:"waiting",
       });
       newOrder
         .save()
@@ -254,7 +253,6 @@ const createOrderForCustomer = async (req, res) => {
         orderDetail: orderDetail,
         seatDetail: newSeatDetail._id,
         total: inforBooking.totalMoney,
-        statusOrder:"waiting",
       });
       // console.log(newOrder);
       newOrder

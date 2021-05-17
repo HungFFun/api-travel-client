@@ -79,17 +79,30 @@ const updateCustomer = async (req, res) => {
 
 const getNumberOrder = async (req, res) => {
   try {
-    const customerId = req.body.id;
+    const customerId = req.body.Id;
     const getOrder = await order
       .find({})
-      .select({ orderDate: 1 })
+      // .select({ orderDate: 1 })
+      .populate({
+        path: 'orderDetail',
+        // populate trong models con
+        populate: {
+          path: 'product',
+          // select những thuộc tính cần thiết
+          select: { productName: 1, price: 1, image: 1 },
+        },
+      })
       .populate([
         {
           path: 'seatDetail',
           populate: [
             {
+              path: 'customer',
+              select: { fullName: 1, email: 1, phone: 1, address: 1 },
+            },
+            {
               path: 'tour',
-              select: { tourName: 1 },
+              select: { tourName: 1, listImage: 1 },
             },
           ],
         },
@@ -99,9 +112,8 @@ const getNumberOrder = async (req, res) => {
     var orderChecked = [];
     if (getOrder.length !== 0) {
       for (let i = 0; i < getOrder.length; i++) {
-        console.log(getOrder[i]);
         const element = getOrder[i].seatDetail;
-        if ((element.customer == customerId)) {
+        if ((element.customer._id == customerId)) {
           if ((getOrder[i].statusOrder == 'cancelled')) {
             orderCancelled.push(getOrder[i]);
           } else if ((getOrder[i].statusOrder == 'checked')) {
@@ -111,7 +123,7 @@ const getNumberOrder = async (req, res) => {
           }
         }
       }
-      res.status(200).send({ orderCancelled:orderCancelled, orderChecked:orderChecked, orderWaiting:orderWaiting });
+      res.status(200).send({ orderCancelled: orderCancelled, orderChecked: orderChecked, orderWaiting: orderWaiting });
     } else {
       res.status(200).send({ message: CUSTOMERCONSTANT.CUSTOMER_NOT_ORDER });
     }
