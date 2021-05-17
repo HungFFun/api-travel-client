@@ -5,7 +5,7 @@ var moment = require('moment');
 const getAllTour = async (req, res) => {
   try {
     const allTour = await tour
-      .find({})
+      .find({statusTour:true})
       .populate(['hotel', 'place', 'employee']);
     if (allTour.length != 0) {
       res.status(200).send(allTour);
@@ -21,7 +21,7 @@ const getTourById = async (req, res) => {
   try {
     const id = req.params.id;
     const tourById = await tour
-      .findById({ _id: id })
+      .findById({ $and:[{_id: id },{statusTour:true}]})
       .populate(['employee', 'place']);
     if (tourById.length != 0) {
       res.status(200).send(tourById);

@@ -94,23 +94,24 @@ const getNumberOrder = async (req, res) => {
           ],
         },
       ]);
-    const oderCancelled = [];
-    const oderWaiting = [];
-    const oderChecked = [];
+    var orderCancelled = [];
+    var orderWaiting = [];
+    var orderChecked = [];
     if (getOrder.length !== 0) {
       for (let i = 0; i < getOrder.length; i++) {
+        console.log(getOrder[i]);
         const element = getOrder[i].seatDetail;
-        if ((element.customer = customerId)) {
-          if ((getOrder[i].statusOrder = 'cancelled')) {
-            oderCancelled.push(getOrder[i]);
-          } else if ((getOrder[i].statusOrder = 'checked')) {
-            oderChecked.push(getOrder[i]);
+        if ((element.customer == customerId)) {
+          if ((getOrder[i].statusOrder == 'cancelled')) {
+            orderCancelled.push(getOrder[i]);
+          } else if ((getOrder[i].statusOrder == 'checked')) {
+            orderChecked.push(getOrder[i]);
           } else {
-            oderWaiting.push(getOrder[i]);
+            orderWaiting.push(getOrder[i]);
           }
         }
       }
-      res.status(200).send({ oderCancelled, oderChecked, oderWaiting });
+      res.status(200).send({ orderCancelled:orderCancelled, orderChecked:orderChecked, orderWaiting:orderWaiting });
     } else {
       res.status(200).send({ message: CUSTOMERCONSTANT.CUSTOMER_NOT_ORDER });
     }
