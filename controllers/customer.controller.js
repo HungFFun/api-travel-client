@@ -79,7 +79,7 @@ const updateCustomer = async (req, res) => {
 
 const getNumberOrder = async (req, res) => {
   try {
-    const customerId = req.body.Id;
+    const customerId = req.body.id;
     const getOrder = await order
       .find({})
       // .select({ orderDate: 1 })
