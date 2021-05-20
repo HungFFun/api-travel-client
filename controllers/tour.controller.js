@@ -144,10 +144,15 @@ const findTourByTourNameAndStartDate = async (req, res) => {
   try {
     const tourName = req.body.tourName;
     const startDate = new Date(req.body.startDate);
+    startDate.setUTCHours(0, 0, 0, 0);
     var endDate = new Date(req.body.startDate);
-    endDate.setDate(endDate.getDate() + 1)
-    const tourByName = await tour.find({ tourName: tourName })
-      .where('startDate').gte(startDate).lt(endDate);
+    endDate.setDate(endDate.getDate() + 1);
+    endDate.setUTCHours(0, 0, 0, 0);
+    const tourByName = await tour
+      .findOne({ tourName: tourName })
+      .where('startDate')
+      .gte(startDate)
+      .lt(endDate);
     res.status(200).send(tourByName);
   } catch (error) {
     res.status(500).send({ message: TOURCONSTANT.SYSTEM_ERROR });
