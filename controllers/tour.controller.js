@@ -21,9 +21,9 @@ const getTourById = async (req, res) => {
   try {
     const id = req.params.id;
     const tourById = await tour
-      .findById({ $and:[{_id: id },{statusTour:true}]})
+      .findOne({ $and:[{_id: id },{statusTour:true}]})
       .populate(['employee', 'place']);
-    if (tourById.length != 0) {
+    if (tourById != null) {
       res.status(200).send(tourById);
     } else {
       res.status(200).send(TOURCONSTANT.NOT_FOUND_TOUR);
