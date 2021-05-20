@@ -6,4 +6,5 @@ const orderController = require('../controllers/order.controller')
 router.get('/api/orders',orderController.getAllOrder);
 router.post('/api/order/create',orderController.createOrderForCustomer);
 router.put('/api/order/update',orderController.updateOrderForCustomer);
+
 module.exports = router

@@ -5,7 +5,7 @@ var moment = require('moment');
 const getAllTour = async (req, res) => {
   try {
     const allTour = await tour
-      .find({statusTour:true})
+      .find({ statusTour: true })
       .populate(['hotel', 'place', 'employee']);
     if (allTour.length != 0) {
       res.status(200).send(allTour);
@@ -21,7 +21,7 @@ const getTourById = async (req, res) => {
   try {
     const id = req.params.id;
     const tourById = await tour
-      .findOne({ $and:[{_id: id },{statusTour:true}]})
+      .findOne({ $and: [{ _id: id }, { statusTour: true }] })
       .populate(['employee', 'place']);
     if (tourById != null) {
       res.status(200).send(tourById);
@@ -49,8 +49,6 @@ const getTourByKeyword = async (req, res) => {
       eDate.setDate(eDate.getDate() + 1);
       query.endDate = eDate;
     }
-    // startDate ? (query.startDate = new Date(moment(startDate))) : '';
-    // endDate ? (query.endDate = new Date(moment(endDate))): '';
     adult ? (priceDetail = adult) : '';
     startPlace ? (query.startPlace = startPlace) : '';
     numberTicket ? (ticket = numberTicket) : '';
@@ -145,12 +143,11 @@ const findTourByTourName = async (req, res) => {
 const findTourByTourNameAndStartDate = async (req, res) => {
   try {
     const tourName = req.body.tourName;
-    const startDate = new Date(moment(req.body.startDate));
-
-    startDate.setDate(startDate.getDate() + 1);
-    const tourByName = await tour.findOne({
-      $and: [{ tourName: tourName }, { startDate: startDate }],
-    });
+    const startDate = new Date(req.body.startDate);
+    var endDate = new Date(req.body.startDate);
+    endDate.setDate(endDate.getDate() + 1)
+    const tourByName = await tour.find({ tourName: tourName })
+      .where('startDate').gte(startDate).lt(endDate);
     res.status(200).send(tourByName);
   } catch (error) {
     res.status(500).send({ message: TOURCONSTANT.SYSTEM_ERROR });
