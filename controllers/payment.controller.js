@@ -3,8 +3,9 @@ const config = require('config');
 const dateFormat = require('dateformat');
 const querystring = require('qs');
 const sha256 = require('sha256');
-
-const create_payment_url = async function (req, res, next) {
+const order = require('../models/order.model');
+const create_payment_url = async function (req, res) {
+  console.log(req.body.inforBooking.bookId);
   var ipAddr =
     req.headers['x-forwarded-for'] ||
     req.connection.remoteAddress ||
@@ -19,7 +20,8 @@ const create_payment_url = async function (req, res, next) {
   var date = new Date();
 
   var createDate = dateFormat(date, 'yyyymmddHHmmss');
-  var orderId = dateFormat(date, 'HHmmss');
+  var orderId = req.body.inforBooking.bookId;
+
   // giá tiền
   var amount = 10000;
   var bankCode = req.body.bankCode;
@@ -87,8 +89,21 @@ const vnpay_ipn = function (req, res, next) {
   if (secureHash === checkSum) {
     var orderId = vnp_Params['vnp_TxnRef'];
     var rspCode = vnp_Params['vnp_ResponseCode'];
+    console.log(orderId);
+    order
+      .findOneAndUpdate(
+        { orderCode: orderId },
+        { $set: { statusOrder: 'checked' } }
+      )
+      .then((value) => {
+        console.log(value);
+      })
+      .catch((error) => {
+        res.status(500).send({ message: 'update thất bại' });
+      });
     //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
-    res.status(200).json({ RspCode: '00', Message: 'success' });
+
+    res.redirect('http://localhost:8080/#/Payment');
   } else {
     res.status(200).json({ RspCode: '97', Message: 'Fail checksum' });
   }
