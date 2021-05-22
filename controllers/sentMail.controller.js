@@ -18,8 +18,10 @@ const sentEmailConfirm = async (req, res) => {
       // config mail server
       service: 'Gmail',
       auth: {
-        user: 'hungffun.1@gmail.com',
-        pass: '729199dohung',
+        // user: 'hungffun.1@gmail.com',
+        // pass: '729199dohung',
+        user: 'phatxitxaydung@gmail.com',
+        pass: 'sfhk123@',
       },
     });
     var mainOptions = {
