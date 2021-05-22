@@ -19,7 +19,7 @@ const sentEmailConfirm = async (req, res) => {
       service: 'Gmail',
       auth: {
         user: 'hungffun.1@gmail.com',
-        pass: '1641999dohung',
+        pass: '729199dohung',
       },
     });
     var mainOptions = {
