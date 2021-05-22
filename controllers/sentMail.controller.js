@@ -21,7 +21,7 @@ const sentEmailConfirm = async (req, res) => {
         // user: 'hungffun.1@gmail.com',
         // pass: '729199dohung',
         user: 'phatxitxaydung@gmail.com',
-        pass: 'sfhk123@',
+        pass: 'Khanhhoa123@',
       },
     });
     var mainOptions = {
