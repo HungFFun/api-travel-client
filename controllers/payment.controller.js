@@ -103,7 +103,7 @@ const vnpay_ipn = function (req, res, next) {
       });
     //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
 
-    res.redirect('http://localhost:8080/#/Payment');
+    res.redirect('https://pandafly.vercel.app/#/Payment');
   } else {
     res.status(200).json({ RspCode: '97', Message: 'Fail checksum' });
   }
