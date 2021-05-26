@@ -8,6 +8,10 @@ const ORDERCONSTANT = require('../constants/order.constant');
 const CUSTOMERCONSTANT = require('../constants/customer.constant');
 const moment = require('moment');
 const orderModel = require('../models/order.model');
+var jwt = require('jsonwebtoken');
+var bcrypt = require('bcryptjs');
+const jwt_key = `${process.env.jwt_key}`;
+require('dotenv').config();
 
 const getAllOrder = async (req, res) => {
   try {
@@ -62,6 +66,8 @@ const createOrderForCustomer = async (req, res) => {
       inforChildren,
       inforYoung,
     } = req.body;
+
+    customer.password = bcrypt.hashSync("123456", 8);
 
     // Tạo danh sách sản phẩm cần mua
     var orderDetail = [];
@@ -315,6 +321,7 @@ const updateOrderForCustomer = async (req, res) => {
 
       // update lại người đăng kí
       if (customer !== undefined) {
+        customer.password = bcrypt.hashSync("123456", 8);
         const customerExist = await customerModel.findOne({
           $or: [{ phone: customer.phone }, { email: customer.email }],
         });
