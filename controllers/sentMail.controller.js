@@ -1,7 +1,8 @@
-var nodemailer = require('nodemailer');
-const tour = require('../models/tour.model');
-const TOURCONSTANT = require('../constants/tour.constant');
-const tourModel = require('../models/tour.model');
+var nodemailer = require("nodemailer");
+const tour = require("../models/tour.model");
+const TOURCONSTANT = require("../constants/tour.constant");
+const tourModel = require("../models/tour.model");
+const customer = require("../models/customer.model");
 
 const sentEmailConfirm = async (req, res) => {
   try {
@@ -16,18 +17,18 @@ const sentEmailConfirm = async (req, res) => {
     } = req.body;
     var transporter = nodemailer.createTransport({
       // config mail server
-      service: 'Gmail',
+      service: "Gmail",
       auth: {
-        user: 'hungffun.1@gmail.com',
-        pass: '729199dohung',
+        user: "hungffun.1@gmail.com",
+        pass: "729199dohung",
       },
     });
     var mainOptions = {
       // thiết lập đối tượng, nội dung gửi mail
-      from: 'Thanh Batmon',
+      from: "Thanh Batmon",
       to: user.email,
-      subject: 'Xác thực đăng ký Tour của BandaFly',
-      text: 'You recieved message from ',
+      subject: "Xác thực đăng ký Tour của BandaFly",
+      text: "You recieved message from ",
       html:
         `<table  cellpadding="0" cellspacing="0" width="1000" border="0">
           <tbody><tr>
@@ -259,13 +260,93 @@ const sentEmailConfirm = async (req, res) => {
       if (err) {
         console.log(err);
       } else {
-        console.log('Message sent: ' + info.response);
+        console.log("Message sent: " + info.response);
       }
     });
   } catch (error) {
     res.status(500).send({ message: TOURCONSTANT.NOT_FOUND_TOUR });
   }
 };
+const sentEmailChangePass = async (req, res) => {
+  try {
+    const  email  = req.body.email;
+    let customerFind = await customer.findOne({ email: email });
+    if (customerFind !== null) {
+      var transporter = nodemailer.createTransport({
+        // config mail server
+        service: "Gmail",
+        auth: {
+          user: "hungffun.1@gmail.com",
+          pass: "729199dohung",
+        },
+      });
+      var mainOptions = {
+        // thiết lập đối tượng, nội dung gửi mail
+        from: "Thanh Batmon",
+        to: email,
+        subject: "Mật khẩu mặc định tài khoản PandaFly",
+        text: "You recieved message from ",
+       
+        html: `<table  cellpadding="0" cellspacing="0" width="1000" border="0">
+            <tbody>
+            <tr>
+                <td colspan="2">
+                    <div style="height:70px;width:760px">
+                        <div style="float:left;width:380px;margin-top:10px">
+                        </div>
+                        <div style="float:left;width:380px;margin-top:10px">
+                            <div style="margin-left:260px;text-align:left">
+                                <span style="color:#c50000;font-weight:bold;font-size:20px">1900 1839</span><br>
+                                <span style="color:#333;font-size:11px">cước gọi 1000đ/phút</span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div style="text-align:center;font-weight:bold;text-transform:uppercase;color:#000;font-size:24px;padding-top:20px;padding-bottom:20px;border-bottom:1px dotted #ccc;border-top:1px dotted #ccc;margin-bottom:30px"Tài khoản mặc định</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div style="font-weight:bold;text-transform:uppercase;color:#c50000;margin-bottom:10px;font-size:16px">Mật khẩu mặc định của bạn là : Pandafly123</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="font-weight:bold">
+                    <div style="margin-bottom:15px">
+                        Chúc quý khách 1 chuyến du lịch thật vui vẻ và bổ ích!
+                    </div>
+                </td>
+            </tr>
+            
+            <tr>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+           
+        </tbody></table>`,
+      };
+      transporter.sendMail(mainOptions, function (err, info) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Message sent: " + info.response);
+        }
+      });
+      res
+        .status(200)
+        .send({ message: "Kiểm tra tài email để nhận tài khoản mặc đinh" });
+    } else {
+      res
+        .status(200)
+        .send({ message: "Email chưa được liên kết với tài khoản" });
+    }
+  } catch (error) {
+    res.status(500).send({ message: 'Lỗi hệ thống' });
+  }
+};
 module.exports = {
   sentEmailConfirm,
+  sentEmailChangePass,
 };

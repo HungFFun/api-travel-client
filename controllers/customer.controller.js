@@ -77,18 +77,44 @@ const updateCustomer = async (req, res) => {
   }
 };
 
+
+const updateCustomerByToken = async (req, res) => {
+  try {
+    const {
+      fullName,
+      gender,
+      birthday,
+      phone,
+      email,
+      identityCard,
+      address,
+      token,
+    } = req.body;
+    let query = {};
+    fullName ? (query.fullName = fullName) : '';
+    gender ? (query.gender = gender) : '';
+    birthday ? (query.birthday = birthday) : '';
+    phone ? (query.phone = phone) : '';
+    email ? (query.email = email) : '';
+    identityCard ? (query.identityCard = identityCard) : '';
+    address ? (query.address = address) : '';
+    customer.findOneAndUpdate({ token: token }, { $set: query }).then((docs) => {
+      res.status(200).send(docs);
+    });
+  } catch (error) {
+    res.status(500).send({ message: CUSTOMERCONSTANT.SYSTEM_ERROR });
+  }
+};
+
 const getNumberOrder = async (req, res) => {
   try {
     const customerId = req.body.id;
     const getOrder = await order
       .find({})
-      // .select({ orderDate: 1 })
       .populate({
         path: 'orderDetail',
-        // populate trong models con
         populate: {
           path: 'product',
-          // select những thuộc tính cần thiết
           select: { productName: 1, price: 1, image: 1 },
         },
       })
@@ -137,4 +163,5 @@ module.exports = {
   getCustomerById,
   updateCustomer,
   getNumberOrder,
+  updateCustomerByToken
 };

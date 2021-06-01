@@ -13,6 +13,8 @@ router.get('/api/account/profileByUserId', accountController.getUserId);
 router.post('/api/account/profileByToken', accountController.getUserByToken);
 
 router.put('/api/account/status', accountController.updateStatusAccount);
-router.put('/api/account/changePass', accountController.updatePasword);
+router.put('/api/account/changePass', accountController.updatePasswordByToken);
+router.put('/api/account/back-password', accountController.changePassword);
+
 
 module.exports = router;

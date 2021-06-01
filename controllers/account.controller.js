@@ -65,7 +65,7 @@ const registerAccount = async (req, res) => {
           res.status(500).send({ message: ACCOUNTCONSTANT.ADD_ACCOUNT_FAIL });
         });
     } else {
-      res.status(500).send({ message: ACCOUNTCONSTANT.ACCOUNT_EXISTED });
+      res.status(200).send({ message: ACCOUNTCONSTANT.ACCOUNT_EXISTED });
     }
   } catch (error) {
     res.status(500).send({ message: ACCOUNTCONSTANT.SYSTEM_ERROR });
@@ -130,14 +130,13 @@ const getUserByToken = async (req, res) => {
   }
 };
 
-const updatePasword = async (req, res) => {
+const updatePasswordByToken = async (req, res) => {
   try {
-    const id = req.body.id;
-    const password = req.body.passnew;
+    const {token,password }= req.body;
     // mã hóa password
     const passwordBcrypt = bcrypt.hashSync(password, 8);
     customer
-      .findByIdAndUpdate({ _id: id }, { $set: { password: passwordBcrypt } })
+      .findOneAndUpdate({ token: token }, { $set: { password: passwordBcrypt } })
       .then((value) => {
         res.status(200).send(value);
       })
@@ -176,12 +175,30 @@ const loginFaceOrGoogle = async (req, res) => {
   }
 };
 
+
+const changePassword = async (req, res) => {
+  try {
+    const {
+      email,
+      password
+    } = req.body;
+    const passwordBcrypt = bcrypt.hashSync(password, 8);
+    customer.findOneAndUpdate({ email: email }, { $set: { password: passwordBcrypt }}).then((docs) => {
+      res.status(200).send(docs);
+    });
+  } catch (error) {
+    res.status(500).send({ message: CUSTOMERCONSTANT.SYSTEM_ERROR });
+  }
+};
+
+
 module.exports = {
   loginAccount,
   registerAccount,
   updateStatusAccount,
-  updatePasword,
+  updatePasswordByToken,
   getUserId,
   getUserByToken,
   loginFaceOrGoogle,
+  changePassword,
 };
