@@ -12,5 +12,6 @@ router.post(
   '/api/tours/name-date',
   tourController.findTourByTourNameAndStartDate
 );
+router.post('/api/tours/place', tourController.findTourByPlace);
 
 module.exports = router;

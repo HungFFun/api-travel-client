@@ -35,16 +35,16 @@ const getTourById = async (req, res) => {
 
 const getTourByKeyword = async (req, res) => {
   try {
-    const { startDate, endDate, adult, startPlace, numberTicket } = req.body;
+    const { startDate, endDate, adult, startPlace, numberTicket, place, transportation } = req.body;
     let query = {};
     let priceDetail = null;
     let ticket = 0;
-    if (startDate !== null) {
+    if (startDate !== undefined) {
       var sDate = new Date(moment(startDate));
       sDate.setDate(sDate.getDate() + 1);
       query.startDate = sDate;
     }
-    if (endDate !== null) {
+    if (endDate !== undefined) {
       var eDate = new Date(moment(endDate));
       eDate.setDate(eDate.getDate() + 1);
       query.endDate = eDate;
@@ -53,70 +53,324 @@ const getTourByKeyword = async (req, res) => {
     startPlace ? (query.startPlace = startPlace) : '';
     numberTicket ? (ticket = numberTicket) : '';
     console.log(query);
+    console.log(priceDetail);
     let listTour;
     if (priceDetail == null) {
-      listTour = await tour
-        .find(query)
-        .where('numberTicket')
-        .gte(ticket)
-        .populate(['hotel', 'place', 'employee']);
+      if (transportation != null) {
+        if (place !== undefined) {
+          listTour = await tour
+            .find(query)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('transportation')
+            .in(transportation)
+            .where('place')
+            .in(place)
+            .populate(['hotel', 'place', 'employee']);
+        }
+        else {
+          listTour = await tour
+            .find(query)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('transportation')
+            .in(transportation)
+            .populate(['hotel', 'place', 'employee']);
+        }
+      }
+      else {
+        if (place !== undefined) {
+          listTour = await tour
+            .find(query)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('place')
+            .in(place)
+            .populate(['hotel', 'place', 'employee']);
+        }
+        else {
+          listTour = await tour
+            .find(query)
+            .where('numberTicket')
+            .gte(ticket)
+            .populate(['hotel', 'place', 'employee']);
+        }
+      }
     }
     //  Từ 0 đến 4 triệu
     else if (priceDetail == 1) {
-      listTour = await tour
-        .find({
-          $and: [query, { 'priceDetail.adult': { $gte: 0, $lte: 2000000 } }],
-        })
-        .where('numberTicket')
-        .gte(ticket)
-        .populate(['hotel', 'place', 'employee']);
+      if (transportation !== undefined) {
+        if (place !== undefined) {
+          listTour = await tour
+            .find(query)
+            // .find({
+            //   $and: [query, { 'priceDetail.adult': { $gte: 0, $lte: 2000000 } }],
+            // })
+            .where('priceDetail.adult')
+            .gte(0)
+            .lte(2000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('transportation')
+            .in(transportation)
+            .where('place')
+            .in(place)
+            .populate(['hotel', 'place', 'employee']);
+        }
+        else {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(0)
+            .lte(2000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('transportation')
+            .in(transportation)
+            .populate(['hotel', 'place', 'employee']);
+        }
+      }
+      else {
+        if (place !== undefined) {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(0)
+            .lte(2000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('place')
+            .in(place)
+            .populate(['hotel', 'place', 'employee']);
+        }
+        else {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(0)
+            .lte(2000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .populate(['hotel', 'place', 'employee']);
+        }
+      }
     }
     //  Từ 2 đến 4 triệu
     else if (priceDetail == 2) {
-      listTour = await tour
-        .find({
-          $and: [
-            query,
-            { 'priceDetail.adult': { $gte: 2000000, $lte: 4000000 } },
-          ],
-        })
-        .where('numberTicket')
-        .gte(ticket)
-        .populate(['hotel', 'place', 'employee']);
+      if (transportation !== undefined) {
+        if (place !== undefined) {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(2000000)
+            .lte(4000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('transportation')
+            .in(transportation)
+            .where('place')
+            .in(place)
+            .populate(['hotel', 'place', 'employee']);
+        }
+        else {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(2000000)
+            .lte(4000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('transportation')
+            .in(transportation)
+            .populate(['hotel', 'place', 'employee']);
+        }
+      }
+      else {
+        if (place !== undefined) {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(2000000)
+            .lte(4000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('place')
+            .in(place)
+            .populate(['hotel', 'place', 'employee']);
+        }
+        else {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(2000000)
+            .lte(4000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .populate(['hotel', 'place', 'employee']);
+        }
+      }
     }
     //   // Từ 4 đến 6 triệu
     else if (priceDetail == 3) {
-      listTour = await tour
-        .find({
-          $and: [
-            query,
-            { 'priceDetail.adult': { $gte: 4000000, $lte: 6000000 } },
-          ],
-        })
-        .where('numberTicket')
-        .gte(ticket)
-        .populate(['hotel', 'place', 'employee']);
+      if (transportation !== undefined) {
+        if (place !== undefined) {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(4000000)
+            .lte(6000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('transportation')
+            .in(transportation)
+            .where('place')
+            .in(place)
+            .populate(['hotel', 'place', 'employee']);
+        }
+        else {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(4000000)
+            .lte(6000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('transportation')
+            .in(transportation)
+            .populate(['hotel', 'place', 'employee']);
+        }
+      }
+      else {
+        if (place !== undefined) {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(4000000)
+            .lte(6000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('place')
+            .in(place)
+            .populate(['hotel', 'place', 'employee']);
+        }
+        else {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(4000000)
+            .lte(6000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .populate(['hotel', 'place', 'employee']);
+        }
+      }
     }
     //   // Từ 6 đên 10 triệu
     else if (priceDetail == 4) {
-      listTour = await tour
-        .find({
-          $and: [
-            query,
-            { 'priceDetail.adult': { $gte: 6000000, $lte: 10000000 } },
-          ],
-        })
-        .where('numberTicket')
-        .gte(ticket)
-        .populate(['hotel', 'place', 'employee']);
+      if (transportation !== undefined) {
+        if (place !== undefined) {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(6000000)
+            .lte(10000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('transportation')
+            .in(transportation)
+            .where('place')
+            .in(place)
+            .populate(['hotel', 'place', 'employee']);
+        }
+        else {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(6000000)
+            .lte(10000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('transportation')
+            .in(transportation)
+            .populate(['hotel', 'place', 'employee']);
+        }
+      }
+      else {
+        if (place !== undefined) {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(6000000)
+            .lte(10000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('place')
+            .in(place)
+            .populate(['hotel', 'place', 'employee']);
+        }
+        else {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(6000000)
+            .lte(10000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .populate(['hotel', 'place', 'employee']);
+        }
+      }
+
     }
     //   // Trên 10 triệu
     else if (priceDetail == 5) {
-      listTour = await tour
-        .find({ $and: [query, { 'priceDetail.adult': { $gte: 10000000 } }] })
-        .where('numberTicket')
-        .gte(ticket)
-        .populate(['hotel', 'place', 'employee']);
+      if (transportation !== undefined) {
+        if (place !== undefined) {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(10000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('transportation')
+            .in(transportation)
+            .where('place')
+            .in(place)
+            .populate(['hotel', 'place', 'employee']);
+        }
+        else {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(10000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('transportation')
+            .in(transportation)
+            .populate(['hotel', 'place', 'employee']);
+        }
+      }
+      else {
+        if (place !== undefined) {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(10000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .where('place')
+            .in(place)
+            .populate(['hotel', 'place', 'employee']);
+        }
+        else {
+          listTour = await tour
+            .find(query)
+            .where('priceDetail.adult')
+            .gte(10000000)
+            .where('numberTicket')
+            .gte(ticket)
+            .populate(['hotel', 'place', 'employee']);
+        }
+      }
     }
     if (listTour !== null) {
       return res.status(200).send(listTour);
@@ -133,7 +387,8 @@ const findTourByTourName = async (req, res) => {
     const listTourByTourName = await tour
       .find({ tourName: tourName })
       .select('startDate')
-      .sort({ startDate: 1 });
+      .sort({ startDate: 1 })
+      .populate(['hotel', 'place', 'employee']);
     res.status(200).send(listTourByTourName);
   } catch (error) {
     res.status(500).send({ message: TOURCONSTANT.SYSTEM_ERROR });
@@ -152,16 +407,32 @@ const findTourByTourNameAndStartDate = async (req, res) => {
       .findOne({ tourName: tourName })
       .where('startDate')
       .gte(startDate)
-      .lt(endDate);
+      .lt(endDate)
+      .populate(['hotel', 'place', 'employee']);
     res.status(200).send(tourByName);
   } catch (error) {
     res.status(500).send({ message: TOURCONSTANT.SYSTEM_ERROR });
   }
 };
+
+const findTourByPlace = async (req, res) => {
+  try {
+    const tourByName = await tour
+      .find({})
+      .where('place')
+      .in(req.body.place)
+      .populate(['hotel', 'place', 'employee']);
+    res.status(200).send(tourByName);
+  } catch (error) {
+    res.status(500).send({ message: TOURCONSTANT.SYSTEM_ERROR });
+  }
+};
+
 module.exports = {
   getAllTour,
   getTourById,
   getTourByKeyword,
   findTourByTourName,
   findTourByTourNameAndStartDate,
+  findTourByPlace
 };
