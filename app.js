@@ -13,6 +13,7 @@ const accountRouter = require('./routes/account.router');
 const orderRouter = require('./routes/order.router');
 const sentMailRouter = require('./routes/sentMail.router');
 const paymentRouter = require('./routes/payment.router');
+const placeRouter = require('./routes/place.router');
 
 const fileUpload = require('express-fileupload');
 require('dotenv').config();
@@ -45,6 +46,7 @@ app.use('/', accountRouter);
 app.use('/', sentMailRouter);
 app.use('/', orderRouter);
 app.use('/', paymentRouter);
+app.use('/', placeRouter);
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');

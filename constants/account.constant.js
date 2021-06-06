@@ -1,4 +1,3 @@
-
 // Đăng nhập
 module.exports.ACCOUNT_LOCKED ="Tài khoản đã bị đóng"
 module.exports.PASSWORD_ACCOUNT_FAIL="Sai mật khẩu"

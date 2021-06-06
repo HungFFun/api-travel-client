@@ -3,7 +3,6 @@ module.exports.NOT_FIND_ORDER="Không tìm thấy hóa đơn"
 module.exports.FIND_ORDER_FAIL="Tìm hóa đơn thất bại"
 module.exports.FIND_ORDER_SUCCESS="Tìm hóa đơn thành công"
 
-
 //Tạo order
 
 module.exports.CREATE_ORDER_SUCCESS="Tạo hóa đơn thành công"

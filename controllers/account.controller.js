@@ -175,7 +175,6 @@ const loginFaceOrGoogle = async (req, res) => {
   }
 };
 
-
 const changePassword = async (req, res) => {
   try {
     const {
@@ -190,7 +189,6 @@ const changePassword = async (req, res) => {
     res.status(500).send({ message: CUSTOMERCONSTANT.SYSTEM_ERROR });
   }
 };
-
 
 module.exports = {
   loginAccount,
