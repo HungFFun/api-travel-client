@@ -36,15 +36,16 @@ const getTourById = async (req, res) => {
 const getTourByKeyword = async (req, res) => {
   try {
     const { startDate, endDate, adult, startPlace, numberTicket, place, transportation } = req.body;
+    console.log(place);
     let query = {};
     let priceDetail = null;
     let ticket = 0;
-    if (startDate !== undefined) {
+    if (startDate !== null) {
       var sDate = new Date(moment(startDate));
       sDate.setDate(sDate.getDate() + 1);
       query.startDate = sDate;
     }
-    if (endDate !== undefined) {
+    if (endDate !== null) {
       var eDate = new Date(moment(endDate));
       eDate.setDate(eDate.getDate() + 1);
       query.endDate = eDate;
@@ -57,7 +58,7 @@ const getTourByKeyword = async (req, res) => {
     let listTour;
     if (priceDetail == null) {
       if (transportation != null) {
-        if (place !== undefined) {
+        if (place !== null) {
           listTour = await tour
             .find(query)
             .where('numberTicket')
@@ -79,7 +80,7 @@ const getTourByKeyword = async (req, res) => {
         }
       }
       else {
-        if (place !== undefined) {
+        if (place !== null) {
           listTour = await tour
             .find(query)
             .where('numberTicket')
@@ -99,8 +100,8 @@ const getTourByKeyword = async (req, res) => {
     }
     //  Từ 0 đến 4 triệu
     else if (priceDetail == 1) {
-      if (transportation !== undefined) {
-        if (place !== undefined) {
+      if (transportation !== null) {
+        if (place !== null) {
           listTour = await tour
             .find(query)
             // .find({
@@ -131,7 +132,7 @@ const getTourByKeyword = async (req, res) => {
         }
       }
       else {
-        if (place !== undefined) {
+        if (place !== null) {
           listTour = await tour
             .find(query)
             .where('priceDetail.adult')
@@ -157,8 +158,8 @@ const getTourByKeyword = async (req, res) => {
     }
     //  Từ 2 đến 4 triệu
     else if (priceDetail == 2) {
-      if (transportation !== undefined) {
-        if (place !== undefined) {
+      if (transportation !== null) {
+        if (place !== null) {
           listTour = await tour
             .find(query)
             .where('priceDetail.adult')
@@ -186,7 +187,7 @@ const getTourByKeyword = async (req, res) => {
         }
       }
       else {
-        if (place !== undefined) {
+        if (place !== null) {
           listTour = await tour
             .find(query)
             .where('priceDetail.adult')
@@ -210,10 +211,10 @@ const getTourByKeyword = async (req, res) => {
         }
       }
     }
-    //   // Từ 4 đến 6 triệu
+    //  Từ 4 đến 6 triệu
     else if (priceDetail == 3) {
-      if (transportation !== undefined) {
-        if (place !== undefined) {
+      if (transportation !== null) {
+        if (place !== null) {
           listTour = await tour
             .find(query)
             .where('priceDetail.adult')
@@ -241,7 +242,7 @@ const getTourByKeyword = async (req, res) => {
         }
       }
       else {
-        if (place !== undefined) {
+        if (place !== null) {
           listTour = await tour
             .find(query)
             .where('priceDetail.adult')
@@ -265,10 +266,10 @@ const getTourByKeyword = async (req, res) => {
         }
       }
     }
-    //   // Từ 6 đên 10 triệu
+    // Từ 6 đên 10 triệu
     else if (priceDetail == 4) {
-      if (transportation !== undefined) {
-        if (place !== undefined) {
+      if (transportation !== null) {
+        if (place !== null) {
           listTour = await tour
             .find(query)
             .where('priceDetail.adult')
@@ -296,7 +297,7 @@ const getTourByKeyword = async (req, res) => {
         }
       }
       else {
-        if (place !== undefined) {
+        if (place !== null) {
           listTour = await tour
             .find(query)
             .where('priceDetail.adult')
@@ -321,10 +322,10 @@ const getTourByKeyword = async (req, res) => {
       }
 
     }
-    //   // Trên 10 triệu
+    // Trên 10 triệu
     else if (priceDetail == 5) {
-      if (transportation !== undefined) {
-        if (place !== undefined) {
+      if (transportation !== null) {
+        if (place !== null) {
           listTour = await tour
             .find(query)
             .where('priceDetail.adult')
@@ -350,7 +351,7 @@ const getTourByKeyword = async (req, res) => {
         }
       }
       else {
-        if (place !== undefined) {
+        if (place !== null) {
           listTour = await tour
             .find(query)
             .where('priceDetail.adult')
