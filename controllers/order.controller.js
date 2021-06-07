@@ -178,6 +178,7 @@ const createOrderForCustomer = async (req, res) => {
       tour.numberTicket = tour.numberTicket - inforBooking.totalPeople;
       if (tour.numberTicket <= 0) {
         tour.seatStatus = 'Hết chỗ';
+        tour.statusTour = false;
       }
       tourModel
         .findByIdAndUpdate(
@@ -186,6 +187,7 @@ const createOrderForCustomer = async (req, res) => {
             $set: {
               numberTicket: tour.numberTicket,
               seatStatus: tour.seatStatus,
+              statusTour: tour.statusTour
             },
           }
         )
@@ -225,7 +227,7 @@ const createOrderForCustomer = async (req, res) => {
         listCutomerTour: listCustomerTour,
         customer: newCustomer._id,
         // amountRoom: getSeatDetail.amountRoom,
-        totalPrice: priceCustomerTour + newSeatDetail.totalPrice,
+        totalPrice: priceCustomerTour,
       });
       // console.log(newSeatDetail);
       newSeatDetail.save(function (err) {
@@ -240,6 +242,7 @@ const createOrderForCustomer = async (req, res) => {
       tour.numberTicket = tour.numberTicket - inforBooking.totalPeople;
       if (tour.numberTicket <= 0) {
         tour.seatStatus = 'Hết chỗ';
+        tour.statusTour = false;
       }
       tourModel
         .findByIdAndUpdate(
@@ -248,6 +251,7 @@ const createOrderForCustomer = async (req, res) => {
             $set: {
               numberTicket: tour.numberTicket,
               seatStatus: tour.seatStatus,
+              statusTour:tour.statusTour
             },
           }
         )
@@ -259,7 +263,7 @@ const createOrderForCustomer = async (req, res) => {
         orderDate: inforBooking.dateBook,
         orderDetail: orderDetail,
         seatDetail: newSeatDetail._id,
-        total: inforBooking.totalMoney,
+        total: inforBooking.totalMoney + newSeatDetail.totalPrice,
       });
       // console.log(newOrder);
       newOrder
@@ -313,6 +317,7 @@ const updateOrderForCustomer = async (req, res) => {
             $set: {
               numberTicket: getTourOld.numberTicket,
               seatStatus: getTourOld.seatStatus,
+              statusTour :true
             },
           }
         )
