@@ -197,7 +197,7 @@ const createOrderForCustomer = async (req, res) => {
         orderDate: inforBooking.dateBook,
         orderDetail: orderDetail,
         seatDetail: newSeatDetail._id,
-        total: inforBooking.totalMoney,
+        total: inforBooking.totalMoney + newSeatDetail.totalPrice,
       });
       newOrder
         .save()
@@ -225,7 +225,7 @@ const createOrderForCustomer = async (req, res) => {
         listCutomerTour: listCustomerTour,
         customer: newCustomer._id,
         // amountRoom: getSeatDetail.amountRoom,
-        totalPrice: priceCustomerTour,
+        totalPrice: priceCustomerTour + newSeatDetail.totalPrice,
       });
       // console.log(newSeatDetail);
       newSeatDetail.save(function (err) {
