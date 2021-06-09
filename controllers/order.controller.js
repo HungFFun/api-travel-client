@@ -71,42 +71,43 @@ const createOrderForCustomer = async (req, res) => {
 
     // Tạo danh sách sản phẩm cần mua
     var orderDetail = [];
-    for (let i = 0; i < productCart.length; i++) {
-      const newOrderDetail = new orderDetailModel({
-        quantity: productCart[i].quantity,
-        price: productCart[i].price,
-        product: productCart[i]._id,
-        totalPrice: productCart[i].quantity * productCart[i].price,
-      });
-      orderDetail.push(newOrderDetail._id);
-      newOrderDetail
-        .save()
-        .then((value) => {
-          console.log('Tạo chi tiết các sản phẩm thành công');
-        })
-        .catch((error) => {
-          console.log('Tạo chi tiết các sản phẩm thất bại');
-          // res
-          // .status(500)
-          // .send({ message: 'Tạo chi tiết các sản phẩm thất bại' });
+    if (productCart !== undefined) {
+      for (let i = 0; i < productCart.length; i++) {
+        const newOrderDetail = new orderDetailModel({
+          quantity: productCart[i].quantity,
+          price: productCart[i].price,
+          product: productCart[i]._id,
+          totalPrice: productCart[i].quantity * productCart[i].price,
         });
-      var getProductById = await productModel.findById({
-        _id: newOrderDetail.product,
-      });
-      if (getProductById != null) {
-        getProductById.quantity =
-          getProductById.quantity - newOrderDetail.quantity;
-        productModel
-          .findByIdAndUpdate(
-            { _id: getProductById._id },
-            { $set: { quantity: getProductById.quantity } }
-          )
+        orderDetail.push(newOrderDetail._id);
+        newOrderDetail
+          .save()
           .then((value) => {
-            console.log('Trừ số lượng product thành công');
+            console.log('Tạo chi tiết các sản phẩm thành công');
+          })
+          .catch((error) => {
+            console.log('Tạo chi tiết các sản phẩm thất bại');
+            // res
+            // .status(500)
+            // .send({ message: 'Tạo chi tiết các sản phẩm thất bại' });
           });
+        var getProductById = await productModel.findById({
+          _id: newOrderDetail.product,
+        });
+        if (getProductById != null) {
+          getProductById.quantity =
+            getProductById.quantity - newOrderDetail.quantity;
+          productModel
+            .findByIdAndUpdate(
+              { _id: getProductById._id },
+              { $set: { quantity: getProductById.quantity } }
+            )
+            .then((value) => {
+              console.log('Trừ số lượng product thành công');
+            });
+        }
       }
     }
-
     // Tạo danh sách người đi
     var listCustomerTour = [];
     var priceCustomerTour = 0;
@@ -167,7 +168,7 @@ const createOrderForCustomer = async (req, res) => {
       });
       newSeatDetail
         .save()
-        .then((value) => {})
+        .then((value) => { })
         .catch((error) => {
           console.log(error);
           console.log(ORDERCONSTANT.CREATE_SEAT_FAIL);
@@ -177,6 +178,7 @@ const createOrderForCustomer = async (req, res) => {
       tour.numberTicket = tour.numberTicket - inforBooking.totalPeople;
       if (tour.numberTicket <= 0) {
         tour.seatStatus = 'Hết chỗ';
+        tour.statusTour = false;
       }
       tourModel
         .findByIdAndUpdate(
@@ -185,6 +187,7 @@ const createOrderForCustomer = async (req, res) => {
             $set: {
               numberTicket: tour.numberTicket,
               seatStatus: tour.seatStatus,
+              statusTour: tour.statusTour
             },
           }
         )
@@ -196,7 +199,7 @@ const createOrderForCustomer = async (req, res) => {
         orderDate: inforBooking.dateBook,
         orderDetail: orderDetail,
         seatDetail: newSeatDetail._id,
-        total: inforBooking.totalMoney,
+        total: inforBooking.totalMoney + newSeatDetail.totalPrice,
       });
       newOrder
         .save()
@@ -239,6 +242,7 @@ const createOrderForCustomer = async (req, res) => {
       tour.numberTicket = tour.numberTicket - inforBooking.totalPeople;
       if (tour.numberTicket <= 0) {
         tour.seatStatus = 'Hết chỗ';
+        tour.statusTour = false;
       }
       tourModel
         .findByIdAndUpdate(
@@ -247,6 +251,7 @@ const createOrderForCustomer = async (req, res) => {
             $set: {
               numberTicket: tour.numberTicket,
               seatStatus: tour.seatStatus,
+              statusTour:tour.statusTour
             },
           }
         )
@@ -258,7 +263,7 @@ const createOrderForCustomer = async (req, res) => {
         orderDate: inforBooking.dateBook,
         orderDetail: orderDetail,
         seatDetail: newSeatDetail._id,
-        total: inforBooking.totalMoney,
+        total: inforBooking.totalMoney + newSeatDetail.totalPrice,
       });
       // console.log(newOrder);
       newOrder
@@ -312,6 +317,7 @@ const updateOrderForCustomer = async (req, res) => {
             $set: {
               numberTicket: getTourOld.numberTicket,
               seatStatus: getTourOld.seatStatus,
+              statusTour :true
             },
           }
         )
