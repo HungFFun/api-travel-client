@@ -89,7 +89,7 @@ const vnpay_ipn = function (req, res, next) {
   if (secureHash === checkSum) {
     var orderId = vnp_Params["vnp_TxnRef"];
     var rspCode = vnp_Params["vnp_ResponseCode"];
-    if (rspCode === 0) {
+    if (rspCode === "00") {
       order
         .findOneAndUpdate(
           { orderCode: orderId },
@@ -105,7 +105,7 @@ const vnpay_ipn = function (req, res, next) {
 
       res.redirect("https://pandafly.vercel.app/#/Payment");
     } else {
-      res.redirect("http://localhost:8080/#/PaymentFail");
+      res.redirect("https://pandafly.vercel.app/#/PaymentFail");
     }
   } else {
     res.status(200).json({ RspCode: "97", Message: "Fail checksum" });
