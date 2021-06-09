@@ -58,7 +58,9 @@ const sentEmailConfirm = async (req, res) => {
                   <div style="background:#f1f1f1;padding:15px;height:190px;margin-bottom:20px">
                       <div style="width:100%;float:left">
                           <div style="padding:0 15px 0 15px">
-                              <div style="font-size:16px;text-align:justify;line-height:18px;color:#025da6;margin-bottom:10px">Bay cùng Vietravel Airlines: Sapa - Hà Nội -  Yên Tử - Hạ Long - Bái Đính - Tràng An  - Tuyệt Tịnh Cốc An (Tặng Vé Tàu Hỏa Mường Hoa, Khách Sạn 3 Sao)</div>
+                              <div style="font-size:16px;text-align:justify;line-height:18px;color:#025da6;margin-bottom:10px">` +
+        tour.tourName +
+        `</div>
                               <div style="float:left;width:100%;margin-bottom:7px">
                                   <div style="float:left;width:20%;font-weight:bold;color:#333">Mã tour:</div>
                                   <div style="float:left;width:80%">` +
@@ -83,7 +85,7 @@ const sentEmailConfirm = async (req, res) => {
                               </div>
                               <div style="float:left;width:100%;margin-bottom:7px">
                                   <div style="float:left;width:20%;font-weight:bold;color:#333">Nơi tập trung:</div>
-                                  <div style="float:left;width:30%">06:30 sáng tại Cột 14 Cổng D3 -Ga đi trong nước-Sân bay Tân Sơn Nhất</div>
+                                  <div style="float:left;width:30%">06:30 sáng tại Cột 14 Cổng D3 -Ga đi trong nước </div>
                                   <div style="float:left;width:20%;font-weight:bold;color:#333">Điểm khởi hành:</div>
                                   <div style="float:left;width:30%"> ` +
         tour.startPlace +
@@ -211,31 +213,33 @@ const sentEmailConfirm = async (req, res) => {
                           <td class="m_8740785467110873926td-left">Tổng số khách:</td>
                           <td class="m_8740785467110873926td-right">
                               <span style="float:left;color:#c50000;font-weight:bold">
-                                  1
+                                  ` +
+        (inforAdults.length + inforChildren.length + inforYoung.length) +
+        `
                               </span>
                               <span style="float:left;font-weight:bold;color:#333">
                                   &nbsp; &nbsp; &nbsp; Người lớn:
                               </span>
                               <span style="float:left">
-                                  1
+                              ` +
+        inforAdults.length +
+        `
                               </span>
                               <span style="float:left;font-weight:bold;color:#333">
                                   &nbsp; &nbsp; &nbsp; Trẻ em:
                               </span>
                               <span style="float:left">
-                                  0
-                              </span>
-                              <span style="float:left;font-weight:bold;color:#333">
-                                  &nbsp; &nbsp; &nbsp;   Trẻ nhỏ:
-                              </span>
-                              <span style="float:left">
-                                  0
+                              ` +
+        inforChildren.length +
+        `
                               </span>
                               <span style="float:left;font-weight:bold;color:#333">
                                   &nbsp; &nbsp; &nbsp;   Em bé:
                               </span>
                               <span style="float:left">
-                                  0
+                              ` +
+        inforYoung.length +
+        `
                               </span>
                           </td>
                       </tr>
@@ -269,7 +273,7 @@ const sentEmailConfirm = async (req, res) => {
 };
 const sentEmailChangePass = async (req, res) => {
   try {
-    const  email  = req.body.email;
+    const email = req.body.email;
     let customerFind = await customer.findOne({ email: email });
     if (customerFind !== null) {
       var transporter = nodemailer.createTransport({
@@ -286,7 +290,7 @@ const sentEmailChangePass = async (req, res) => {
         to: email,
         subject: "Mật khẩu mặc định tài khoản PandaFly",
         text: "You recieved message from ",
-       
+
         html: `<table  cellpadding="0" cellspacing="0" width="1000" border="0">
             <tbody>
             <tr>
@@ -343,7 +347,7 @@ const sentEmailChangePass = async (req, res) => {
         .send({ message: "Email chưa được liên kết với tài khoản" });
     }
   } catch (error) {
-    res.status(500).send({ message: 'Lỗi hệ thống' });
+    res.status(500).send({ message: "Lỗi hệ thống" });
   }
 };
 module.exports = {
