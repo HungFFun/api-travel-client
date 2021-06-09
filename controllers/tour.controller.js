@@ -56,7 +56,7 @@ const getTourByKeyword = async (req, res) => {
 
     query.statusTour = true;
 
-    console.log(query);
+    // console.log(query);
     // console.log(priceDetail);
     let listTour;
     if (priceDetail == null) {
@@ -377,7 +377,7 @@ const getTourByKeyword = async (req, res) => {
       }
     }
     if (listTour !== null) {
-      console.log(listTour.length);
+      // console.log(listTour.length);
       return res.status(200).send(listTour);
     }
     return res.status(200).send(listTour);
