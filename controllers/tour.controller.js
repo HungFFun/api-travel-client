@@ -36,7 +36,7 @@ const getTourById = async (req, res) => {
 const getTourByKeyword = async (req, res) => {
   try {
     const { startDate, endDate, adult, startPlace, numberTicket, place, transportation } = req.body;
-    console.log(place);
+
     let query = {};
     let priceDetail = null;
     let ticket = 0;
@@ -53,8 +53,11 @@ const getTourByKeyword = async (req, res) => {
     adult ? (priceDetail = adult) : '';
     startPlace ? (query.startPlace = startPlace) : '';
     numberTicket ? (ticket = numberTicket) : '';
+
+    query.statusTour = true;
+
     console.log(query);
-    console.log(priceDetail);
+    // console.log(priceDetail);
     let listTour;
     if (priceDetail == null) {
       if (transportation != null) {
@@ -374,6 +377,7 @@ const getTourByKeyword = async (req, res) => {
       }
     }
     if (listTour !== null) {
+      console.log(listTour.length);
       return res.status(200).send(listTour);
     }
     return res.status(200).send(listTour);
