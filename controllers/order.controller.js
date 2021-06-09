@@ -71,6 +71,7 @@ const createOrderForCustomer = async (req, res) => {
 
     // Tạo danh sách sản phẩm cần mua
     var orderDetail = [];
+    var productPrice = 0
     if (productCart !== undefined) {
       for (let i = 0; i < productCart.length; i++) {
         const newOrderDetail = new orderDetailModel({
@@ -80,6 +81,7 @@ const createOrderForCustomer = async (req, res) => {
           totalPrice: productCart[i].quantity * productCart[i].price,
         });
         orderDetail.push(newOrderDetail._id);
+        productPrice = productPrice + newOrderDetail.totalPrice;
         newOrderDetail
           .save()
           .then((value) => {
@@ -199,8 +201,9 @@ const createOrderForCustomer = async (req, res) => {
         orderDate: inforBooking.dateBook,
         orderDetail: orderDetail,
         seatDetail: newSeatDetail._id,
-        total: inforBooking.totalMoney + newSeatDetail.totalPrice,
+        total: priceCustomerTour + productPrice,
       });
+      console.log(newOrder);
       newOrder
         .save()
         .then((value) => {
@@ -251,7 +254,7 @@ const createOrderForCustomer = async (req, res) => {
             $set: {
               numberTicket: tour.numberTicket,
               seatStatus: tour.seatStatus,
-              statusTour:tour.statusTour
+              statusTour: tour.statusTour
             },
           }
         )
@@ -263,7 +266,7 @@ const createOrderForCustomer = async (req, res) => {
         orderDate: inforBooking.dateBook,
         orderDetail: orderDetail,
         seatDetail: newSeatDetail._id,
-        total: inforBooking.totalMoney + newSeatDetail.totalPrice,
+        total: priceCustomerTour + productPrice,
       });
       // console.log(newOrder);
       newOrder
@@ -317,7 +320,7 @@ const updateOrderForCustomer = async (req, res) => {
             $set: {
               numberTicket: getTourOld.numberTicket,
               seatStatus: getTourOld.seatStatus,
-              statusTour :true
+              statusTour: true
             },
           }
         )
